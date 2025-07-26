@@ -1,6 +1,6 @@
 {
   "name": "hakoru-tuner-two",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "main": "src/index.js",
   "types": "index.d.ts",
   "description": "Expo uyumlu, gerçek zamanlı tuner (YIN algoritmasıyla frekans ve nota tespiti)",
@@ -9,7 +9,8 @@
   "files": [
     "src",
     "android",
-    "index.d.ts"
+    "index.d.ts",
+    "plugin.js"
   ],
   "repository": {
     "type": "git",
@@ -17,5 +18,8 @@
   },
   "homepage": "https://github.com/AZduyulan/hakoru-tuner-two#readme",
   "author": "Burak Berkay Özgündüz",
-  "private": false
+  "private": false,
+  "expo": {
+    "plugin": "./plugin.js"
+  }
 }
