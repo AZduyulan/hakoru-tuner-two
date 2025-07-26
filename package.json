@@ -1,6 +1,6 @@
 {
   "name": "hakoru-tuner-two",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "src/index.js",
   "types": "index.d.ts",
   "description": "Expo uyumlu, gerçek zamanlı tuner (YIN algoritmasıyla frekans ve nota tespiti)",
@@ -28,6 +28,6 @@
   "author": "Burak Berkay Özgündüz",
   "private": false,
   "expo": {
-    "plugins": ["./plugin"]
+    "plugins": ["./app.plugin.js"]
   }
 }
