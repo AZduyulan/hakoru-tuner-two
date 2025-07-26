@@ -1,8 +1,8 @@
-
 {
   "name": "hakoru-tuner-two",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "main": "src/index.js",
+  "react-native": "src/index.js",
   "types": "index.d.ts",
   "description": "Expo uyumlu, gerçek zamanlı tuner (YIN algoritmasıyla frekans ve nota tespiti)",
   "keywords": [
