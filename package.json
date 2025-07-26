@@ -1,6 +1,6 @@
 {
   "name": "hakoru-tuner-two",
-  "version": "1.0.9",
+  "version": "1.0.12",
   "main": "src/index.js",
   "react-native": "src/index.js",
   "types": "index.d.ts",

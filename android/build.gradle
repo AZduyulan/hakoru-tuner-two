@@ -9,7 +9,8 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 33
-
+    namespace 'com.hakoru.tuner'
+    
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 33

@@ -122,8 +122,8 @@ public class HakoruTunerTwoModule extends ReactContextBaseJavaModule {
 
         if (calculateRMS(frequency) < 0.005) return;
 
-        String result = String.format("{\"freq\":%.2f,\"note\":\"%s%d\",\"cents\":%.1f,\"isInTune\":%b}",
-                frequency, note, octave, cents, Math.abs(cents) < 5);
+        String result = String.format("{\"freq\":%.2f,\"note\":\"%s%d\",\"cents\":%.1f,\"isInTune\":%s}",
+                frequency, note, octave, cents, Math.abs(cents) < 5 ? "true" : "false");
 
         new Handler(Looper.getMainLooper()).post(() ->
             reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
