@@ -1,16 +1,24 @@
 {
   "name": "hakoru-tuner-two",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "src/index.js",
   "types": "index.d.ts",
   "description": "Expo uyumlu, gerçek zamanlı tuner (YIN algoritmasıyla frekans ve nota tespiti)",
-  "keywords": ["react-native", "expo", "tuner", "pitch-detection", "yin", "guitar", "native-module"],
+  "keywords": [
+    "react-native",
+    "expo",
+    "tuner",
+    "pitch-detection",
+    "yin",
+    "guitar",
+    "native-module"
+  ],
   "license": "MIT",
   "files": [
     "src",
     "android",
     "index.d.ts",
-    "plugin.js"
+    "plugin"
   ],
   "repository": {
     "type": "git",
@@ -20,6 +28,6 @@
   "author": "Burak Berkay Özgündüz",
   "private": false,
   "expo": {
-    "plugin": "./plugin.js"
+    "plugins": ["./plugin"]
   }
 }
