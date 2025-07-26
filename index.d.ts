@@ -5,8 +5,8 @@ export interface PitchResult {
   isInTune: boolean;
 }
 
-export function start(options?: { a4: number }): void;
+export function start(options?: { a4: number }): Promise<boolean>;
 export function stop(): void;
 export function onPitchDetected(
-  callback: (data: string) => void
+  callback: (data: PitchResult) => void
 ): { remove: () => void };

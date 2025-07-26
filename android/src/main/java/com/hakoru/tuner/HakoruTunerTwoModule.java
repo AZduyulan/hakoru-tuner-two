@@ -5,10 +5,13 @@ import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Handler;
 import android.os.Looper;
+import androidx.core.content.ContextCompat;
+import android.content.pm.PackageManager;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 public class HakoruTunerTwoModule extends ReactContextBaseJavaModule {
@@ -30,57 +33,82 @@ public class HakoruTunerTwoModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void start(int a4Input) {
-        this.a4 = a4Input;
+    public void start(int a4Input, Promise promise) {
+        if (ContextCompat.checkSelfPermission(reactContext, android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            promise.reject("PERMISSION_DENIED", "Microphone permission is required");
+            return;
+        }
 
+        this.a4 = a4Input;
         int bufferSize = AudioRecord.getMinBufferSize(
             sampleRate,
             AudioFormat.CHANNEL_IN_MONO,
             AudioFormat.ENCODING_PCM_16BIT
         );
 
-        recorder = new AudioRecord(
-            MediaRecorder.AudioSource.MIC,
-            sampleRate,
-            AudioFormat.CHANNEL_IN_MONO,
-            AudioFormat.ENCODING_PCM_16BIT,
-            bufferSize
-        );
+        try {
+            recorder = new AudioRecord(
+                MediaRecorder.AudioSource.MIC,
+                sampleRate,
+                AudioFormat.CHANNEL_IN_MONO,
+                AudioFormat.ENCODING_PCM_16BIT,
+                bufferSize
+            );
 
-        recorder.startRecording();
-        isRecording = true;
+            if (recorder.getState() != AudioRecord.STATE_INITIALIZED) {
+                promise.reject("AUDIO_RECORD_ERROR", "Failed to initialize AudioRecord");
+                return;
+            }
 
-        thread = new Thread(() -> {
-            short[] buffer = new short[bufferSize];
+            recorder.startRecording();
+            isRecording = true;
 
-            while (isRecording) {
-                int read = recorder.read(buffer, 0, buffer.length);
-                if (read > 0) {
-                    float[] floatBuffer = new float[read];
-                    for (int i = 0; i < read; i++) {
-                        floatBuffer[i] = buffer[i] / 32768f;
-                    }
-
-                    float freq = Yin.detectFrequency(floatBuffer, sampleRate);
-                    if (freq > 20 && freq < 2000) {
-                        emitPitch(freq);
+            thread = new Thread(() -> {
+                short[] buffer = new short[bufferSize];
+                while (isRecording) {
+                    int read = recorder.read(buffer, 0, buffer.length);
+                    if (read > 0) {
+                        float[] floatBuffer = new float[read];
+                        for (int i = 0; i < read; i++) {
+                            floatBuffer[i] = buffer[i] / 32768f;
+                        }
+                        float freq = Yin.detectFrequency(floatBuffer, sampleRate);
+                        if (freq > 20 && freq < 2000) {
+                            emitPitch(freq);
+                        }
+                    } else {
+                        // Hata loglama
                     }
                 }
-            }
-        });
+            });
 
-        thread.start();
+            thread.start();
+            promise.resolve(true);
+        } catch (Exception e) {
+            promise.reject("AUDIO_RECORD_ERROR", e.getMessage());
+        }
     }
 
     @ReactMethod
     public void stop() {
         isRecording = false;
         if (recorder != null) {
-            recorder.stop();
-            recorder.release();
+            try {
+                recorder.stop();
+                recorder.release();
+            } catch (Exception e) {
+                // Hata loglama
+            }
             recorder = null;
         }
-        thread = null;
+        if (thread != null) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                // Hata loglama
+            }
+            thread = null;
+        }
     }
 
     private void emitPitch(float frequency) {

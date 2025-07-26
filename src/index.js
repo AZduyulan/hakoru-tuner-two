@@ -4,7 +4,7 @@ const { HakoruTunerTwo } = NativeModules;
 const emitter = new NativeEventEmitter(HakoruTunerTwo);
 
 export function start(options = { a4: 440 }) {
-  HakoruTunerTwo.start(options.a4);
+  return HakoruTunerTwo.start(options.a4);
 }
 
 export function stop() {
@@ -12,7 +12,9 @@ export function stop() {
 }
 
 export function onPitchDetected(callback) {
-  const sub = emitter.addListener("onPitchDetected", callback);
+  const sub = emitter.addListener("onPitchDetected", (data) => {
+    callback(JSON.parse(data));
+  });
   return {
     remove: () => sub.remove()
   };
